@@ -5,7 +5,7 @@ import Profile from "../routes/Profile";
 import Auth from "../routes/Auth";
 import NavBar from "./NavBar";
 
-function AppRouter({ LoggedIn }) {
+function AppRouter({ LoggedIn, userObj }) {
   return (
     <Router>
       {LoggedIn && <NavBar />}
@@ -13,7 +13,7 @@ function AppRouter({ LoggedIn }) {
         {LoggedIn ? (
           <>
             <Route exact path="/">
-              <Home />
+              <Home userObj={userObj} />
             </Route>
             <Route exact path="/profile">
               <Profile />

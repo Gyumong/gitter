@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { dbService } from "../fbserver";
 
-function Home() {
+function Home({ userObj }) {
   const [gweet, setGweet] = useState("");
   const [dbGweets, setdbGweets] = useState([]);
 
-  const getGweets = async () => {
-    const gweets = await dbService.collection("gweets").get();
-    gweets.forEach((docs) => {
-      const gweetObject = {
-        ...docs.data(),
-        id: docs.id,
-      };
-      setdbGweets((prev) => [gweetObject, ...prev]);
-    });
-  };
   useEffect(() => {
-    getGweets();
+    dbService.collection("gweets").onSnapshot((Snapshot) => {
+      const gweetArray = Snapshot.docs.map((docs) => ({
+        id: docs.id,
+        ...docs.data(),
+      }));
+      setdbGweets(gweetArray);
+    });
   }, []);
 
   const onChange = (e) => {
@@ -25,7 +21,9 @@ function Home() {
   const onSubmit = async (e) => {
     e.preventDefault();
     await dbService.collection("gweets").add({
-      gweet,
+      text: gweet,
+      createAt: Date.now(),
+      creatorId: userObj.uid,
     });
     setGweet("");
   };
@@ -45,7 +43,7 @@ function Home() {
       <div>
         {dbGweets.map((gweet) => (
           <div key={gweet.id}>
-            <h4>{gweet.gweet}</h4>
+            <h4>{gweet.text}</h4>
           </div>
         ))}
       </div>
