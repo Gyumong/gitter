@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { dbService } from "../fbserver";
-
+import Gweets from "../components/Gweets";
 function Home({ userObj }) {
   const [gweet, setGweet] = useState("");
   const [dbGweets, setdbGweets] = useState([]);
@@ -27,7 +27,6 @@ function Home({ userObj }) {
     });
     setGweet("");
   };
-  console.log(dbGweets);
   return (
     <>
       <form onSubmit={onSubmit}>
@@ -42,9 +41,11 @@ function Home({ userObj }) {
       </form>
       <div>
         {dbGweets.map((gweet) => (
-          <div key={gweet.id}>
-            <h4>{gweet.text}</h4>
-          </div>
+          <Gweets
+            key={gweet.id}
+            GweetObj={gweet}
+            isOwner={gweet.creatorId === userObj.uid}
+          />
         ))}
       </div>
     </>
